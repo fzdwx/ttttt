@@ -31,6 +31,7 @@ public class App implements Filter {
 
     public static void main(String[] args) {
         final ConfigurableApplicationContext ctx = SpringApplication.run(App.class, args);
+        threadLocal.remove();
     }
 
     @Override
@@ -46,7 +47,7 @@ public class App implements Filter {
     @GetMapping
     public void test() {
         System.out.println(threadLocal.get());
-        new Thread(() -> {
+        final Runnable runnable = () -> {
             for (; ; ) {
                 try {
                     Thread.sleep(1000);
@@ -55,6 +56,7 @@ public class App implements Filter {
                 }
                 log.info("ttttttttttttt");
             }
-        }).start();
+        };
+        new Thread(runnable).start();
     }
 }
